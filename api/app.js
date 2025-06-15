@@ -1,7 +1,7 @@
 // require("dotenv").config()
 // const express = require('express')
 // const cors = require('cors')
-// const boyParsor = require('body-parser')
+// const bodyParser = require('body-parser')
 // const serverless = require('serverless-http')
 // const db = require('../db')
 
@@ -12,7 +12,7 @@
 // const userRouter = require('../Route/UserRoute')
 
 // const app = express()
-// app.use(boyParsor.json())
+// app.use(bodyParser.json())
 // app.use(cors());
 // // app.use(cors({
 // //     origin: 'http://localhost:3000'
@@ -24,6 +24,39 @@
 // module.exports = app
 // module.exports.handler = serverless(app)
 
+
+// require("dotenv").config();
+// const express = require('express');
+// const cors = require('cors');
+// const bodyParser = require('body-parser');
+// const serverless = require('serverless-http');
+// const connectToDB = require('../db');
+// const userRouter = require('../Route/UserRoute');
+
+// const app = express();
+
+// app.use(bodyParser.json());
+// app.use(cors());
+// app.use('/userapi', userRouter);
+
+// // Ensuring DB is connected before exporting handler
+// let serverlessHandler;
+
+// async function setup() {
+//     await connectToDB(); // ⬅️ wait for DB connection before exporting
+//     serverlessHandler = serverless(app);
+// }
+
+// setup();
+
+// module.exports.handler = async (req, res) => {
+//     if (!serverlessHandler) {
+//         res.statusCode = 503;
+//         res.end('Server is starting up...');
+//         return;
+//     }
+//     return serverlessHandler(req, res);
+// };
 
 require("dotenv").config();
 const express = require('express');
@@ -39,21 +72,20 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use('/userapi', userRouter);
 
-// Ensuring DB is connected before exporting handler
-let serverlessHandler;
+// Connect to DB and cache connection promise
+const dbConnectPromise = connectToDB();
 
-async function setup() {
-    await connectToDB(); // ⬅️ wait for DB connection before exporting
-    serverlessHandler = serverless(app);
-}
-
-setup();
+const serverlessHandler = serverless(app);
 
 module.exports.handler = async (req, res) => {
-    if (!serverlessHandler) {
-        res.statusCode = 503;
-        res.end('Server is starting up...');
-        return;
-    }
+  try {
+    // Await DB connection before handling request
+    await dbConnectPromise;
     return serverlessHandler(req, res);
+  } catch (error) {
+    console.error("DB connection error:", error);
+    res.statusCode = 500;
+    res.end('Database connection error');
+  }
 };
+
