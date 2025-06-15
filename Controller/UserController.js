@@ -84,25 +84,52 @@ exports.deleteQR = async (req, res) => {
     }
 }
 
+
 exports.registerUser = async (req, res) => {
-    const uname = req.body.uname
-    const uemail = req.body.uemail
-    const upassword = await bcrypt.hash(req.body.upassword, 12)
-
     try {
-        const newUser = new UserModel({
-            'user_name': uname,
-            'user_email': uemail,
-            'user_password': upassword
-        })
+        const { uname, uemail, upassword } = req.body;
 
-        const saveUser = await newUser.save()
-        res.json({ saveUser })
+        const existingUser = await UserModel.findOne({ user_email: uemail });
+        if (existingUser) {
+            return res.status(409).json({ error: 'Email already registered' });
+        }
+
+        const hashedPassword = await bcrypt.hash(upassword, 12);
+
+        const newUser = new UserModel({
+            user_name: uname,
+            user_email: uemail,
+            user_password: hashedPassword
+        });
+
+        const savedUser = await newUser.save();
+        res.json({ savedUser });
     } catch (error) {
-        console.log('error:', error)
-        res.status(500).json({ error: 'Internal server error' }); // this is important!
+        console.error('RegisterUser Error:', error);
+        res.status(500).json({ error: 'A server error has occurred' });
     }
-}
+};
+
+
+// exports.registerUser = async (req, res) => {
+//     const uname = req.body.uname
+//     const uemail = req.body.uemail
+//     const upassword = await bcrypt.hash(req.body.upassword, 12)
+
+//     try {
+//         const newUser = new UserModel({
+//             'user_name': uname,
+//             'user_email': uemail,
+//             'user_password': upassword
+//         })
+
+//         const saveUser = await newUser.save()
+//         res.json({ saveUser })
+//     } catch (error) {
+//         console.log('error:', error)
+//         res.status(500).json({ error: 'Internal server error' }); // this is important!
+//     }
+// }
 
 exports.loginUser = async (req, res) => {
     const uemail = req.body.uemail
