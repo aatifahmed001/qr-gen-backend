@@ -43,6 +43,17 @@ app.use(cors())
 connectDB().then(() => {
     // all router will initiate here
     app.use('/userapi', userRouter)
+    app.get('/userapi/debug', async (req, res) => {
+        try {
+            const mongoose = require('mongoose');
+            if (mongoose.connection.readyState === 1) {
+                return res.status(200).json({ status: 'connected' });
+            }
+            return res.status(500).json({ status: 'not connected' });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    });
 
     const port = process.env.PORT || 5000
     app.listen(port, () => {
