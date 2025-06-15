@@ -100,6 +100,7 @@ exports.registerUser = async (req, res) => {
         res.json({ saveUser })
     } catch (error) {
         console.log('error:', error)
+        res.status(500).json({ error: 'Internal server error' }); // this is important!
     }
 }
 
