@@ -36,15 +36,13 @@ const connectDB = require('./db')  // <- note the function import
 const userRouter = require('./Route/UserRoute')
 
 const app = express()
-app.use(bodyParser.json())
-app.options('*', (req, res) => {
-  res
-    .header('Access-Control-Allow-Origin', 'https://ultimate-qr-gen-frontend.vercel.app')
-    .header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
-    .header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-    .sendStatus(200);
-});
-app.use(cors({ origin: 'https://ultimate-qr-gen-frontend.vercel.app', methods: ['GET','POST','OPTIONS'], credentials: true }));
+app.use(cors({
+  origin: 'https://ultimate-qr-gen-frontend.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+app.use(bodyParser.json());
 
 // Connect to database before starting server
 connectDB().then(() => {

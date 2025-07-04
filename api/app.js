@@ -75,7 +75,6 @@ app.use(cors({
   credentials: true,
 }));
 app.use(bodyParser.json());
-
 app.use('/', userRouter);
 
 // Connect to DB and cache connection promise
