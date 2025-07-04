@@ -70,7 +70,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(cors({
-  origin: 'https://ultimate-qr-gen-backend.vercel.app'
+  origin: 'https://ultimate-qr-gen-frontend.vercel.app'
 }));
 app.use('/userapi', userRouter);
 
