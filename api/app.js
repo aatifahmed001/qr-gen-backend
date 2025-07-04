@@ -69,7 +69,9 @@ const userRouter = require('../Route/UserRoute');
 const app = express();
 
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://ultimate-qr-gen-backend.vercel.app'
+}));
 app.use('/userapi', userRouter);
 
 // Connect to DB and cache connection promise
