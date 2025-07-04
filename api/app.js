@@ -77,7 +77,7 @@ app.options('*', (req, res) => {
     .sendStatus(200);
 });
 app.use(cors({ origin: 'https://ultimate-qr-gen-frontend.vercel.app', methods: ['GET','POST','OPTIONS'], credentials: true }));
-app.use('/userapi', userRouter);
+app.use('/', userRouter);
 
 // Connect to DB and cache connection promise
 const dbConnectPromise = connectToDB();
