@@ -49,7 +49,7 @@ app.use(cors({ origin: 'https://ultimate-qr-gen-frontend.vercel.app', methods: [
 // Connect to database before starting server
 connectDB().then(() => {
     // all router will initiate here
-    app.use('/userapi', userRouter)
+    app.use('/', userRouter)
     app.get('/userapi/debug', async (req, res) => {
         try {
             const mongoose = require('mongoose');
