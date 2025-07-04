@@ -70,10 +70,20 @@ const app = express();
 
 app.use(cors({
   origin: 'https://ultimate-qr-gen-frontend.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
+
+// Explicit preflight handler
+app.options('*', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://ultimate-qr-gen-frontend.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.status(200).end();  // ✅ must return 200
+});
+
 app.use(bodyParser.json());
 app.use('/', userRouter);
 
