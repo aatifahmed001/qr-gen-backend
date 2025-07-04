@@ -72,7 +72,7 @@ app.use(bodyParser.json());
 app.use(cors({
   origin: 'https://ultimate-qr-gen-frontend.vercel.app'
 }));
-app.use('/userapi', userRouter);
+app.use('userapi', userRouter);
 
 // Connect to DB and cache connection promise
 const dbConnectPromise = connectToDB();

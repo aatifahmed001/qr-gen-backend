@@ -42,7 +42,7 @@ app.use(cors())
 // Connect to database before starting server
 connectDB().then(() => {
     // all router will initiate here
-    app.use('/userapi', userRouter)
+    app.use('userapi', userRouter)
     app.get('/userapi/debug', async (req, res) => {
         try {
             const mongoose = require('mongoose');
